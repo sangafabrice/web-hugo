@@ -17,7 +17,7 @@ Function New-Site {
             New-Item -ItemType Junction -Path ".\$ConfigDir\$($_.Name)" -Target $_.FullName
         }
         Remove-Item -Path ".\$Name\themes" -Force
-        Set-Location -Path .\$Name
+        Set-Location -Path ".\$Name"
         Git init --initial-branch=main .
         Git add .
         Git commit -m "$($Name): site creation"
