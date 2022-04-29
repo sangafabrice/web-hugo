@@ -64,4 +64,33 @@ Function New-Theme {
     Set-Location -
 }
 
+{
+    Param(
+        $commandName,
+        $parameterName,
+        $wordToComplete,
+        $commandAst,
+        $fakeBoundParameters
+    )
+    (Get-ChildItem -Path "${Script:HugoDir}\sites" -Attributes Directory).Name |
+    Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object { $_ }
+} | ForEach-Object {
+    Register-ArgumentCompleter -CommandName Connect-Site -ParameterName Name -ScriptBlock $_
+    Register-ArgumentCompleter -CommandName Deploy-Site -ParameterName Name -ScriptBlock $_
+}
+
+Register-ArgumentCompleter -CommandName Connect-Site -ParameterName Environment -ScriptBlock {
+    Param(
+        $commandName,
+        $parameterName,
+        $wordToComplete,
+        $commandAst,
+        $fakeBoundParameters
+    )
+    If ($fakeBoundParameters.ContainsKey('Name')) {
+        (Get-ChildItem -Path "${Script:HugoDir}\$($fakeBoundParameters.Type)\config" -Attributes Directory -Exclude _default).Name |
+        Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object { $_ }
+    }
+}
+
 Export-ModuleMember -Function '*-Site','*-Theme'
