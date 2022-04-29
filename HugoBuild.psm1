@@ -18,6 +18,7 @@ Function New-Site {
         }
         Remove-Item -Path ".\$Name\themes" -Force
         Set-Location -Path ".\$Name"
+        Add-Content -Path .\.gitignore -Value "public`n.hugo_build.lock"
         Git init --initial-branch=main .
         Git add .
         Git commit -m "$($Name): site creation"
@@ -33,7 +34,19 @@ Function Connect-Site {
         $Environment = 'development'
     )
     Set-Location -Path "${Script:HugoDir}\$Name"
-    Hugo server --themesDir=..\themes --destination=..\sites\$Name --environment=$Environment --port=$Port --cleanDestinationDir
+    Hugo server --themesDir=..\themes --destination=.\public --environment=$Environment --port=$Port --cleanDestinationDir
+}
+
+Function Deploy-Site {
+    Param (
+        [Parameter(Mandatory=$true)] $Name,
+        $CommitText = "Generate site: $(Get-Date)"
+    )
+    Set-Location -Path "${Script:HugoDir}\$Name"
+    Hugo --themesDir=..\themes --destination=..\sites\$Name --environment=production --minify --cleanDestinationDir
+    Git add .
+    Git commit -m "$CommitText"
+    Set-Location -
 }
 
 Export-ModuleMember -Function '*-Site'
