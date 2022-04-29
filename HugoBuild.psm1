@@ -1,5 +1,7 @@
-Hugo completion powershell | Out-String | Invoke-Expression
 $HugoDir = $MyInvocation.MyCommand.Path -replace '\\[^\\]+$'
+Set-Location -Path $HugoDir
+Hugo completion powershell | Out-String | Invoke-Expression
+Set-Location -
 
 Function New-Site {
     Param (
