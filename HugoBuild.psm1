@@ -49,4 +49,19 @@ Function Deploy-Site {
     Set-Location -
 }
 
-Export-ModuleMember -Function '*-Site'
+Function New-Theme {
+    Param (
+        $Name
+    )
+    Set-Location -Path $Script:HugoDir
+    Hugo new theme $Name | Out-Null && $(
+        Set-Location -Path ".\themes\$Name"
+        Git init --initial-branch=main .
+        Git add .
+        Git commit -m "$($Name): theme creation"
+        Set-Location -
+    ) | Out-Null
+    Set-Location -
+}
+
+Export-ModuleMember -Function '*-Site','*-Theme'

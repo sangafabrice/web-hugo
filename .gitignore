@@ -4,4 +4,6 @@
 !config/**
 !sites
 !sites/.gitkeep
+!themes
+!themes/.gitkeep
 !HugoBuild.psm1
