@@ -77,6 +77,7 @@ Function New-Theme {
 } | ForEach-Object {
     Register-ArgumentCompleter -CommandName Connect-Site -ParameterName Name -ScriptBlock $_
     Register-ArgumentCompleter -CommandName Deploy-Site -ParameterName Name -ScriptBlock $_
+    Register-ArgumentCompleter -CommandName Select-Site -ParameterName Name -ScriptBlock $_
 }
 
 Register-ArgumentCompleter -CommandName Connect-Site -ParameterName Environment -ScriptBlock {
@@ -92,5 +93,13 @@ Register-ArgumentCompleter -CommandName Connect-Site -ParameterName Environment 
         Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object { $_ }
     }
 }
+
+Function Select-Site {
+    Param (
+        $Name
+    )
+    Set-Location -Path "${Script:HugoDir}\$Name"
+}
+
 
 Export-ModuleMember -Function '*-Site','*-Theme'
